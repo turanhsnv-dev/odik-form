@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Odik — Qəbul Müraciəti</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Unbounded:wght@800;900&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --fg: #0f0f0f;
+      --fg-2: #525252;
+      --fg-3: #a3a3a3;
+      --border: #e5e5e5;
+      --border-2: #f0f0f0;
+      --bg: #fafafa;
+      --bg-card: #ffffff;
+      --accent: #dc2626;
+      --accent-light: #fef2f2;
+    }
+
+    html { font-family: 'Inter', -apple-system, sans-serif; scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── GATE (WHITE CINEMATIC) ────────────────────────── */
+    #gate-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: #f8f8f6;
+      display: none; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    body.form-mode #gate-overlay { display: flex; }
+    body.form-mode #site { display: none; }
+
+    /* Subtle paper texture */
+    #gate-overlay::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(220,38,38,0.03) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 50%, rgba(220,38,38,0.03) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Two panels — light color */
+    .gate-half {
+      position: absolute; top: 0; width: 50%; height: 100%;
+      background: #f8f8f6;
+      transition: transform 1.8s cubic-bezier(0.76, 0, 0.24, 1);
+      will-change: transform;
+    }
+    .gate-half.left  { left: 0; }
+    .gate-half.right { right: 0; }
+
+    /* Gate open state */
+    #gate-overlay.opening .gate-half.left   { transform: translateX(-100%); }
+    #gate-overlay.opening .gate-half.right  { transform: translateX(100%); }
+
+    /* White flash on open */
+    #gate-flash {
+      position: absolute; inset: 0; z-index: 10;
+      background: white; opacity: 0; pointer-events: none;
+      transition: opacity 0.12s ease;
+    }
+    #gate-overlay.flash #gate-flash { opacity: 0.6; }
+
+    /* Center HUD */
+    #gate-hud {
+      position: relative; z-index: 20;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+      text-align: center;
+    }
+
+    /* ── Tactical Reticle Trigger Assembly ── */
+    .scanner-assembly {
+      position: relative;
+      width: 170px; height: 170px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Outermost radar ring with 4 compass ticks */
+    .radar-ring {
+      position: absolute; inset: 0;
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 50%;
+      animation: radar-rotate 28s linear infinite;
+    }
+    .radar-ring::before {
+      content: '';
+      position: absolute;
+      width: 1px; height: 12px;
+      top: -6px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(220,38,38,0.6);
+      box-shadow: 0 164px 0 0 rgba(220,38,38,0.6);
+    }
+    .radar-ring::after {
+      content: '';
+      position: absolute;
+      width: 12px; height: 1px;
+      left: -6px; top: 50%;
+      transform: translateY(-50%);
+      background: rgba(220,38,38,0.6);
+      box-shadow: 164px 0 0 0 rgba(220,38,38,0.6);
+    }
+
+    /* Inner rotating target dial */
+    .target-dial {
+      position: absolute; inset: 18px;
+      border: 1px dashed rgba(0,0,0,0.12);
+      border-radius: 50%;
+      animation: radar-rotate 16s linear infinite reverse;
+    }
+
+    @keyframes radar-rotate { to { transform: rotate(360deg); } }
+
+    /* The Center Reticle Lock Button */
+    #touch-btn {
+      position: relative; z-index: 5;
+      width: 82px; height: 82px;
+      background: #ffffff;
+      border: 1.5px solid #e4e4e7;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 24px -4px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #touch-btn:hover {
+      transform: scale(1.08);
+      border-color: rgba(220, 38, 38, 0.4);
+      box-shadow: 0 14px 32px -4px rgba(220,38,38,0.18), 0 4px 10px rgba(0,0,0,0.06);
+    }
+    #touch-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Corner targeting brackets */
+    .target-brackets {
+      position: absolute; inset: -7px;
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #touch-btn:hover .target-brackets {
+      transform: scale(0.85);
+    }
+
+    /* Reticle SVG icons & colors */
+    .reticle-core {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #touch-btn:hover .reticle-core {
+      transform: rotate(45deg);
+    }
+    .reticle-center-dot {
+      transition: fill 0.25s, filter 0.25s;
+    }
+    #touch-btn:hover .reticle-center-dot {
+      fill: #dc2626;
+      filter: drop-shadow(0 0 6px rgba(220,38,38,0.9));
+    }
+
+    /* Scan laser line that sweeps across */
+    .scan-laser {
+      position: absolute; z-index: 6;
+      left: 50%; width: 76px; height: 2px;
+      transform: translateX(-50%);
+      background: linear-gradient(to right, transparent, rgba(220,38,38,0.7), transparent);
+      border-radius: 999px;
+      animation: laser-sweep 2.4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes laser-sweep {
+      0%   { top: calc(50% - 38px); opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { top: calc(50% + 38px); opacity: 0; }
+    }
+
+    /* ODIK big title - Unbounded distinct font */
+    #gate-wordmark {
+      font-family: 'Unbounded', sans-serif;
+      font-size: clamp(38px, 6.5vw, 68px);
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: #09090b;
+      user-select: none;
+      padding-left: 0.14em;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Odin gun — inside hud flow */
+    #odin-gun {
+      opacity: 0;
+      animation: gun-float 5s ease-in-out infinite, gun-fadein 0.8s ease 0.3s forwards;
+      pointer-events: none;
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,0.13));
+    }
+    @keyframes gun-float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-7px); }
+    }
+    @keyframes gun-fadein { to { opacity: 1; } }
+
+    /* Gate sub-text and status */
+    #gate-sub {
+      font-size: 11px; color: #b0b0b0;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    #gate-status {
+      font-size: 11px; font-weight: 500;
+      color: #b0b0b0;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      min-height: 16px; transition: color 0.3s;
+    }
+    #gate-status.active  { color: #f59e0b; }
+    #gate-status.success { color: #16a34a; }
+
+    /* ─── MAIN CONTENT ─────────────────────────────────── */
+    #app {
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.8s ease 0.2s;
+    }
+    body:not(.form-mode) #app { display: none; }
+    #app.visible { opacity: 1; visibility: visible; }
+
+    /* Top bar */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(250,250,250,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-2);
+      padding: 0 24px;
+      height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-logo {
+      font-size: 13px; font-weight: 700; letter-spacing: -0.02em;
+      color: var(--fg);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .topbar-logo span.dot {
+      display: inline-block; width: 6px; height: 6px;
+      background: var(--accent); border-radius: 50%;
+    }
+    .topbar-right {
+      font-size: 11px; font-weight: 500; color: var(--fg-3);
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+
+    /* Page layout */
+    .page {
+      max-width: 680px; margin: 0 auto;
+      padding: 64px 24px 120px;
+    }
+
+    /* Eyebrow / category label */
+    .eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    /* Page title */
+    .page-title {
+      font-size: clamp(26px, 5vw, 38px);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+      color: var(--fg);
+      margin-bottom: 16px;
+    }
+    .page-title em { font-style: normal; color: var(--fg-2); }
+
+    /* Lead para */
+    .lead {
+      font-size: 14px; color: var(--fg-2); line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    /* Council pills */
+    .pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .pill {
+      font-size: 11px; font-weight: 500;
+      background: white; border: 1px solid var(--border);
+      color: var(--fg-2); border-radius: 999px;
+      padding: 4px 12px; letter-spacing: -0.01em;
+    }
+
+    /* Divider */
+    .divider { height: 1px; background: var(--border-2); margin: 40px 0; }
+
+    /* Section label */
+    .section-label {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .section-num {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--fg-3);
+    }
+    .section-title {
+      font-size: 14px; font-weight: 600; color: var(--fg);
+      letter-spacing: -0.01em; margin-bottom: 4px;
+    }
+    .section-hint { font-size: 12px; color: var(--fg-3); }
+
+    /* Card group */
+    .card-group { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .card-group > * + * { border-top: 1px solid var(--border-2); }
+
+    /* Radio card */
+    .radio-card {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 18px; background: white; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .radio-card:hover { background: #fafafa; }
+    .radio-card input[type=radio] { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
+    .radio-card-text { font-size: 13px; color: var(--fg); line-height: 1.5; }
+    .radio-card-sub  { font-size: 11px; color: var(--fg-3); margin-top: 1px; }
+
+    /* Troll button (escape) */
+    #btn-escape {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 16px;
+      background: #fff5f5; border: 1px solid #fecaca;
+      border-radius: 10px; cursor: pointer;
+      font-size: 13px; font-weight: 500; color: #b91c1c;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.15s;
+    }
+    #btn-escape:hover { background: #fee2e2; }
+
+    /* Input field */
+    .field-label {
+      font-size: 12px; font-weight: 500; color: var(--fg-2);
+      margin-bottom: 6px; display: flex; justify-content: space-between;
+    }
+    .field-label span { font-weight: 400; color: var(--fg-3); }
+    textarea, input[type=text] {
+      width: 100%; padding: 12px 14px;
+      background: white; border: 1px solid var(--border);
+      border-radius: 12px; font-size: 13px; color: var(--fg);
+      font-family: inherit; resize: none; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      line-height: 1.6;
+    }
+    textarea:focus, input:focus {
+      border-color: #d4d4d4;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+    }
+    textarea[readonly], input[readonly] {
+      background: #f5f5f5; color: var(--fg-2); cursor: not-allowed;
+    }
+
+    /* Sincerity bar */
+    .sincerity-bar-wrap {
+      margin-top: 8px; height: 2px; background: #f0f0f0;
+      border-radius: 999px; overflow: hidden;
+    }
+    .sincerity-bar {
+      height: 100%; width: 0%; border-radius: 999px;
+      background: var(--accent);
+      transition: width 0.4s ease, background 0.4s ease;
+    }
+    .sincerity-label {
+      font-size: 11px; color: var(--fg-3); margin-top: 6px;
+      min-height: 16px; transition: color 0.3s;
+    }
+
+    /* Terms / checkbox */
+    .terms-box {
+      background: white; border: 1px solid var(--border);
+      border-radius: 14px; padding: 16px 18px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .terms-box input[type=checkbox] { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+    .terms-text { font-size: 12px; color: var(--fg-2); line-height: 1.6; }
+
+    /* Submit CTA */
+    #submit-btn {
+      width: 100%; padding: 14px 24px;
+      background: var(--fg); color: white;
+      font-size: 14px; font-weight: 600; letter-spacing: -0.01em;
+      border: none; border-radius: 12px; cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.15s, opacity 0.2s;
+    }
+    #submit-btn:hover { background: #1a1a1a; }
+    #submit-btn.jumped { opacity: 0.7; }
+
+    .submit-note {
+      font-size: 11px; color: var(--fg-3); text-align: center;
+      margin-top: 10px; min-height: 16px; transition: color 0.3s;
+    }
+
+    /* ─── MODALS ───────────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
+      display: none; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal-box {
+      background: white; border-radius: 20px;
+      padding: 36px 32px; text-align: center;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 32px 64px rgba(0,0,0,0.15);
+      animation: modal-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes modal-in {
+      from { opacity: 0; transform: scale(0.92) translateY(8px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: #fafafa; border: 1px solid #f0f0f0;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px; font-size: 22px;
+    }
+    .modal-title {
+      font-size: 18px; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--fg); margin-bottom: 8px;
+    }
+    .modal-sub {
+      font-size: 13px; color: var(--fg-2); line-height: 1.6; margin-bottom: 24px;
+    }
+
+    /* Progress bar */
+    .prog-track {
+      height: 3px; background: #f0f0f0; border-radius: 999px;
+      overflow: hidden; margin-bottom: 12px;
+    }
+    .prog-fill {
+      height: 100%; background: var(--fg); border-radius: 999px;
+      width: 0%; transition: width 0.5s ease;
+    }
+    .prog-label { font-size: 11px; color: var(--fg-3); }
+
+    /* Verdict list */
+    .verdict-list {
+      text-align: left; background: #fafafa; border: 1px solid #f0f0f0;
+      border-radius: 12px; padding: 16px; margin-bottom: 20px;
+    }
+    .verdict-list li {
+      font-size: 12px; color: var(--fg-2); line-height: 1.6;
+      padding: 3px 0; list-style: none;
+      display: flex; gap: 8px;
+    }
+    .verdict-list li::before { content: '—'; color: var(--fg-3); flex-shrink: 0; }
+    .verdict-list li.accent { color: var(--accent); font-weight: 500; }
+    .verdict-list li.accent::before { color: var(--accent); }
+
+    /* WhatsApp button */
+    .wa-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 13px 20px;
+      background: #25D366; color: white;
+      font-size: 13px; font-weight: 600;
+      border-radius: 12px; text-decoration: none;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .wa-btn:hover { background: #1fb559; transform: translateY(-1px); }
+    .wa-btn:active { transform: scale(0.98); }
+
+    /* Scroll lock when gate visible */
+    body.gate-active { overflow: hidden; }
+
+    /* ─── LANDING ──────────────────────────────────────── */
+    #site { background: #f4f3ef; color: #111; min-height: 100vh; overflow-x: clip; }
+
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+      height: 68px; padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(244,243,239,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .site-logo {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800; font-size: 14px; letter-spacing: 0.22em;
+      color: #111; text-decoration: none;
+    }
+    .site-nav { display: flex; align-items: center; gap: 26px; }
+    .site-nav a {
+      font-size: 13px; font-weight: 500; color: #5c5c5c;
+      text-decoration: none; letter-spacing: -0.01em;
+    }
+    .site-nav a:hover { color: #111; }
+
+    .enter-btn {
+      border: none; cursor: pointer;
+      background: #111; color: #fff;
+      font-family: inherit; font-size: 13px; font-weight: 600;
+      letter-spacing: -0.01em;
+      padding: 10px 16px; border-radius: 999px;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .enter-btn:hover { background: #dc2626; }
+    .enter-btn:active { transform: scale(0.98); }
+    .enter-btn-lg { padding: 14px 22px; font-size: 14px; }
+    .enter-btn-light { background: #fff; color: #111; }
+    .enter-btn-light:hover { background: #dc2626; color: #fff; }
+
+    .hero {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      padding: 96px 24px 12px;
+    }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #dc2626;
+    }
+    .kicker-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #dc2626;
+      box-shadow: 0 0 0 4px rgba(220,38,38,0.12);
+    }
+    .hero-title {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: clamp(64px, 11vw, 120px);
+      line-height: 0.84;
+      letter-spacing: 0.04em;
+      margin-top: 18px;
+    }
+    .hero-gun {
+      width: min(440px, 78vw); height: auto;
+      margin-top: 8px;
+      filter: drop-shadow(0 16px 28px rgba(0,0,0,0.14));
+      user-select: none; pointer-events: none;
+    }
+    .hero-lead {
+      max-width: min(420px, 100%); margin-top: 8px;
+      font-size: 16px; line-height: 1.65; color: #5c5c5c;
+    }
+    .hero-actions {
+      display: flex; align-items: center; gap: 22px;
+      margin-top: 28px;
+    }
+    .text-link {
+      font-size: 14px; font-weight: 600; color: #111;
+      text-decoration: none; border-bottom: 1px solid #111;
+      padding-bottom: 1px;
+    }
+    .text-link:hover { color: #dc2626; border-color: #dc2626; }
+
+    .sec-inner { max-width: 1080px; margin: 0 auto; padding: 28px 32px 8px; }
+    .sec-top h2 {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800;
+      font-size: clamp(28px, 3vw, 40px);
+      letter-spacing: -0.03em; line-height: 1.05;
+      margin-top: 8px;
+    }
+    .sec-lead {
+      max-width: 560px; margin-top: 8px;
+      font-size: 15px; line-height: 1.6; color: #5c5c5c;
+    }
+    #sura, #qrup { scroll-margin-top: 80px; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .info-card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 16px;
+      padding: 16px 16px 18px;
+    }
+    .info-card h3 {
+      font-size: 16px; font-weight: 600; letter-spacing: -0.02em;
+    }
+    .info-card .role {
+      margin-top: 4px;
+      font-size: 12px; font-weight: 600; color: #dc2626;
+    }
+    .info-card p {
+      margin-top: 8px;
+      font-size: 13px; line-height: 1.55; color: #5c5c5c;
+    }
+    #qrup { padding-bottom: 28px; }
+
+    .site-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 22px 32px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #9a9892;
+    }
+    .site-footer strong {
+      font-family: 'Unbounded', sans-serif; font-weight: 800; color: #111;
+    }
+
+    @media (max-width: 720px) {
+      .site-header { padding: 0 16px; gap: 12px; }
+      .site-nav { gap: 14px; }
+      .site-nav a { display: none; }
+      .site-header .enter-btn { padding: 8px 12px; font-size: 12px; }
+      .hero { padding: 88px 20px 8px; }
+      .hero-title { font-size: 16vw; letter-spacing: 0.02em; }
+      .hero-lead { font-size: 15px; }
+      .hero-actions { flex-direction: column; gap: 14px; }
+      .sec-inner { padding: 24px 16px 4px; }
+      .card-grid { grid-template-columns: 1fr; }
+      .site-footer { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="site">
+    <header class="site-header">
+      <a class="site-logo" href="#ust">ODIK</a>
+      <nav class="site-nav">
+        <a href="#sura">Şura</a>
+        <a href="#qrup">Qrup</a>
+        <button type="button" class="enter-btn" data-enter>Qəbul formu</button>
+      </nav>
+    </header>
+
+    <section class="hero" id="ust">
+      <p class="kicker"><span class="kicker-dot"></span>Ağsaqqallar Şurası</p>
+      <h1 class="hero-title">ODIK</h1>
+      <img class="hero-gun" src="assets/images/odin.webp" alt="Odin">
+      <p class="hero-lead">Qrupun rəsmi səhifəsi. Qəbul buradan başlayır.</p>
+      <div class="hero-actions">
+        <button type="button" class="enter-btn enter-btn-lg" data-enter>Qəbul formuna keç</button>
+        <a class="text-link" href="#sura">Şuraya bax</a>
+      </div>
+    </section>
+
+    <section id="sura">
+      <div class="sec-inner">
+        <div class="sec-top">
+          <p class="kicker"><span class="kicker-dot"></span>Şura</p>
+          <h2>Ağsaqqallar</h2>
+          <p class="sec-lead">Qrupu bu altı nəfər idarə edir. Qəbul, cərimə və intizam onların sözüdür.</p>
+        </div>
+        <div class="card-grid">
+          <article class="info-card">
+            <h3>Turan Həsənov</h3>
+            <p class="role">Veto hüququ</p>
+            <p>Son söz ondadır. İstədiyi müraciəti dayandıra bilər.</p>
+          </article>
+          <article class="info-card">
+            <h3>Ənvər Əliyev</h3>
+            <p class="role">Təftiş komissiyası</p>
+            <p>Müraciətləri və bəhanələri yoxlayır, boş sözü keçirmir.</p>
+          </article>
+          <article class="info-card">
+            <h3>Ülvi Abdullazadə</h3>
+            <p class="role">Müdafiə naziri</p>
+            <p>Qrupun sərhədini və içəridə qalan üzvləri qoruyur.</p>
+          </article>
+          <article class="info-card">
+            <h3>Kamil Qədiməliyev</h3>
+            <p class="role">Sədaqət nəzarətçisi</p>
+            <p>Kim qalıb, kim çıxıb — onu izləyir.</p>
+          </article>
+          <article class="info-card">
+            <h3>Cavid Həsənov</h3>
+            <p class="role">Baş intizam hakimi</p>
+            <p>Qaydanı pozanın işinə baxır və hökmü oxuyur.</p>
+          </article>
+          <article class="info-card">
+            <h3>Cavid Qəhrəmanov</h3>
+            <p class="role">Arsenal və cərimə rəisi</p>
+            <p>Cəriməni hesablayır. Standart: 6 basdırma dönər.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="qrup">
+      <div class="sec-inner">
+        <div class="sec-top">
+          <p class="kicker"><span class="kicker-dot"></span>Qrup</p>
+          <h2>Odik necə işləyir</h2>
+          <p class="sec-lead">WhatsApp qrupu, bir qayda və geri qayıtmaq üçün tək yol.</p>
+        </div>
+        <div class="card-grid">
+          <article class="info-card">
+            <h3>Qrup</h3>
+            <p>Odik WhatsApp qrupudur. İçəridə qalmaq şuranın icazəsi ilədir.</p>
+          </article>
+          <article class="info-card">
+            <h3>Qayda</h3>
+            <p>«Keyfim elə istədi» deyib çıxmaq keçərli bəhanə sayılmır.</p>
+          </article>
+          <article class="info-card">
+            <h3>Qəbul</h3>
+            <p>Geri qayıtmaq üçün forma doldurulur. Cərimə: 6 basdırma dönər.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <strong>ODIK</strong>
+      <span>Ağsaqqallar Şurası</span>
+    </footer>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- GATE — WHITE CINEMATIC                            -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="gate-overlay">
+    <div class="gate-half left"></div>
+    <div class="gate-half right"></div>
+    <div id="gate-flash"></div>
+
+    <div id="gate-hud">
+
+      <!-- Big ODIK wordmark -->
+      <div id="gate-wordmark">ODIK</div>
+
+      <!-- Odin Weapon Image -->
+      <div id="odin-gun" aria-hidden="true" class="flex justify-center items-center my-1">
+        <img src="assets/images/odin.webp" alt="Valorant Odin" class="w-[380px] max-w-[85vw] h-auto object-contain pointer-events-none select-none transition-transform duration-300 hover:scale-105" />
+      </div>
+
+      <!-- Tactical Reticle Core Assembly -->
+      <div class="scanner-assembly">
+        <div class="radar-ring"></div>
+        <div class="target-dial"></div>
+        <div class="scan-laser"></div>
+        
+        <button id="touch-btn" aria-label="Giriş və Hədəf Kilidi">
+          <!-- Target Corner Brackets -->
+          <svg class="target-brackets" viewBox="0 0 100 100" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round">
+            <!-- Top-Left -->
+            <path d="M22 30 V22 H30" />
+            <!-- Top-Right -->
+            <path d="M78 30 V22 H70" />
+            <!-- Bottom-Left -->
+            <path d="M22 70 V78 H30" />
+            <!-- Bottom-Right -->
+            <path d="M78 70 V78 H70" />
+          </svg>
+
+          <!-- Precision Tactical Reticle / Crosshair -->
+          <svg class="reticle-core w-10 h-10" viewBox="0 0 40 40" fill="none">
+            <!-- Outer compass ring -->
+            <circle cx="20" cy="20" r="14" stroke="#71717a" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6" />
+            <!-- Crosshair axis lines -->
+            <line x1="20" y1="2" x2="20" y2="9" stroke="#18181b" stroke-width="1.8" stroke-linecap="round" />
+            <line x1="20" y1="31" x2="20" y2="38" stroke="#18181b" stroke-width="1.8" stroke-linecap="round" />
+            <line x1="2" y1="20" x2="9" y2="20" stroke="#18181b" stroke-width="1.8" stroke-linecap="round" />
+            <line x1="31" y1="20" x2="38" y2="20" stroke="#18181b" stroke-width="1.8" stroke-linecap="round" />
+            <!-- Inner Tactical Targeting Circle -->
+            <circle cx="20" cy="20" r="6" stroke="#dc2626" stroke-width="1.6" />
+            <!-- Center Optic Laser Dot -->
+            <circle class="reticle-center-dot" cx="20" cy="20" r="2.5" fill="#18181b" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Status line -->
+      <div>
+        <div id="gate-sub">Təhlükəsizlik Sektoru // Ağsaqqallar Şurası</div>
+        <div id="gate-status" style="margin-top:6px">Giriş üçün hədəfə klikləyin</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- APP                                                -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="app">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+      <div class="topbar-logo">
+        <span class="dot"></span>
+        Odik Reabilitasiya Portalı
+      </div>
+      <div class="topbar-right">Müraciət № 2026-01</div>
+    </div>
+
+    <!-- Content -->
+    <div class="page">
+
+      <!-- Header -->
+      <div class="eyebrow">Odik Ağsaqqallar Şurası</div>
+      <h1 class="page-title">
+        Qrupa Qəbul<br>
+        <em>Müraciət Formu</em>
+      </h1>
+      <p class="lead">
+        Bu forma qrupdan könüllü olaraq çıxmış şəxslərin 
+        yenidən inteqrasiyası üçün nəzərdə tutulmuşdur.
+        Bütün cavablar Şura tərəfindən yoxlanılacaq.
+      </p>
+
+      <!-- Council Pills -->
+      <div class="pills">
+        <span class="pill">Turan Həsənov</span>
+        <span class="pill">Ənvər Əliyev</span>
+        <span class="pill">Ülvi Abdullazadə</span>
+        <span class="pill">Kamil Qədiməliyev</span>
+        <span class="pill">Cavid Həsənov</span>
+        <span class="pill">Cavid Qəhrəmanov</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- ─── SECTION 1: Candidate ─────────────────────── -->
+      <div style="margin-bottom:32px">
+        <div class="section-label">
+          <div>
+            <div class="section-num">01 — Müraciətçi</div>
+            <div class="section-title">Şəxsi məlumat</div>
+          </div>
+        </div>
+        <div class="card-group">
+          <div style="padding:14px 18px; background:white;">
+            <div class="field-label" style="margin-bottom:6px">
+              Ad Soyad <span>Dəyişdirilə bilməz</span>
+            </div>
+            <input type="text" value="Elçin Əliyev" readonly>
+          </div>
+          <div class="radio-card" style="justify-content:space-between; cursor:default;">
+            <div>
+              <div class="radio-card-text">Mövcud Status</div>
+              <div class="radio-card-sub">Könüllü kənarlaşdırılmış</div>
+            </div>
+            <span style="font-size:11px; font-weight:600; color:#dc2626; background:#fef2f2; border:1px solid #fecaca; padding:3px 10px; border-radius:999px;">
+              İntizamsızlıq
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SECTION 2: Reason ────────────────────────── -->
+      <div style="margin-bottom:32px">
+        <div class="section-label">
+          <div>
+            <div class="section-num">02 — Səbəb</div>
+            <div class="section-title">Qrupdan çıxmağınızın əsl səbəbi</div>
+            <div class="section-hint">Düzgün bəhanəni seçin.</div>
+          </div>
+        </div>
+
+        <div class="card-group">
+          <label class="radio-card">
+            <input type="radio" name="reason" value="seytan" checked>
+            <div>
+              <div class="radio-card-text">Bir anlıq çaşqınlıq keçirdim. Böyük səhv etdim.</div>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="reason" value="pesman">
+            <div>
+              <div class="radio-card-text">Dostlarımın qədrini bilmədim. Çox peşmanam.</div>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="reason" value="other">
+            <div>
+              <div class="radio-card-text">Digər (Şura nəzərə almayacaq)</div>
+            </div>
+          </label>
+          <!-- TROLL ESCAPE BUTTON -->
+          <div style="padding:12px 18px; background:white;">
+            <button id="btn-escape" type="button">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+              </svg>
+              Keyfim elə istədi
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── SECTION 3: Council Respect ──────────────── -->
+      <div style="margin-bottom:32px">
+        <div class="section-label">
+          <div>
+            <div class="section-num">03 — Sədaqət</div>
+            <div class="section-title">Ağsaqqallar Şurasına münasibət</div>
+          </div>
+        </div>
+        <div class="card-group">
+          <label class="radio-card">
+            <input type="radio" name="respect" value="100" checked>
+            <div>
+              <div class="radio-card-text">Turan Həsənov bu məsələdə 100% haqlıdır.</div>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="respect" value="always">
+            <div>
+              <div class="radio-card-text">Turan Həsənov müzakirəsiz həmişə haqlıdır.</div>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="respect" value="cavid">
+            <div>
+              <div class="radio-card-text">İki Cavidi fərqləndirə bilmirəm, amma hər ikisindən qorxuram.</div>
+              <div class="radio-card-sub">Düzgün cavab budur. Şura razıdır.</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- ─── SECTION 4: Compensation ─────────────────── -->
+      <div style="margin-bottom:32px">
+        <div class="section-label">
+          <div>
+            <div class="section-num">04 — Kompensasiya</div>
+            <div class="section-title">Şura üzvlərini razı salmaq üçün</div>
+          </div>
+        </div>
+        <div class="card-group">
+          <label class="radio-card">
+            <input type="radio" name="comp" value="doner" checked>
+            <div>
+              <div class="radio-card-text">6 Basdırma Dönər + Ayran</div>
+              <div class="radio-card-sub">Hər üzv üçün 1 ədəd, bol ətli.</div>
+            </div>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="comp" value="kabab">
+            <div>
+              <div class="radio-card-text">Xüsusi Kabab Ziyafəti</div>
+              <div class="radio-card-sub">Bütün xərclər Elçin tərəfindən.</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- ─── SECTION 5: Repentance ────────────────────── -->
+      <div style="margin-bottom:32px">
+        <div class="section-label">
+          <div>
+            <div class="section-num">05 — Tövbənamə</div>
+            <div class="section-title">Üzrxahlıq məktubu</div>
+            <div class="section-hint">Minimum 150 simvol. Şura səmimiyyəti ölçür.</div>
+          </div>
+        </div>
+
+        <div class="field-label">
+          <span>Şuraya müraciət</span>
+          <span id="char-count">0 / 150</span>
+        </div>
+        <textarea id="repent" rows="4" placeholder="Hörmətli Ağsaqqallar Şurası, mən Elçin Əliyev etdiyim xətanın fərqindəyəm..."></textarea>
+        <div class="sincerity-bar-wrap">
+          <div class="sincerity-bar" id="sin-bar"></div>
+        </div>
+        <div class="sincerity-label" id="sin-label">Ağsaqqallar sizi dinləyir.</div>
+      </div>
+
+      <!-- ─── SECTION 6: Terms ─────────────────────────── -->
+      <div style="margin-bottom:32px">
+        <div class="terms-box">
+          <input type="checkbox" id="oath" checked>
+          <div class="terms-text">
+            Mən, <strong>Elçin Əliyev</strong>, bir daha heç vaxt "keyfim belə istədi" deyib Odik qrupundan çıxmayacağımı, 
+            qrup üzvlərinin çağırışlarına dərhal cavab verəcəyimi və bu formdakı bütün şərtlərə əməl edəcəyimi 
+            Ağsaqqallar Şurası qarşısında rəsmi olaraq bəyan edirəm.
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div id="submit-notice" class="submit-note" style="margin-bottom:8px"></div>
+      <button id="submit-btn" type="button">Müraciəti Göndər</button>
+      <div class="submit-note">
+        Müraciətiniz Odik Süni İntellekti tərəfindən avtomatik analiz ediləcək.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- MODAL 1: Analysis                                  -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="modal-analysis" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-icon" id="analysis-icon" style="animation: spin 2s linear infinite">⚙️</div>
+      <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #analysis-icon { animation: none; font-size: 22px; }
+      </style>
+      <div class="modal-title">Analiz Edilir</div>
+      <div class="modal-sub" id="analysis-step">WhatsApp arxivləri araşdırılır...</div>
+      <div class="prog-track">
+        <div class="prog-fill" id="prog-fill"></div>
+      </div>
+      <div class="prog-label" id="prog-label">0%</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- MODAL 2: Verdict                                   -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <div id="modal-verdict" class="modal-backdrop">
+    <div class="modal-box" style="max-width:440px">
+      <div class="modal-icon">📋</div>
+      <div class="modal-title">Şura Qərarı</div>
+      <div class="modal-sub">Ağsaqqallar Şurasının rəsmi yekun hökmü</div>
+      <ul class="verdict-list">
+        <li>Elçin Əliyevin peşmançılığı qismən nəzərə alındı.</li>
+        <li>"Keyfim elə istədi" bəhanəsi rəsmi olaraq yasaqlandı.</li>
+        <li>6 Basdırma Dönər + Ayran cəriməsi qüvvəyə mindi.</li>
+        <li class="accent">Qrupa qayıtmaq üçün aşağıdakı düyməni sıxın.</li>
+      </ul>
+      <a id="wa-btn" href="#" target="_blank" class="wa-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+        </svg>
+        Şuraya Üzr Mesajı Göndər
+      </a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════ -->
+  <!-- SCRIPTS                                            -->
+  <!-- ═══════════════════════════════════════════════════ -->
+  <script>
+  // ── AUDIO ──────────────────────────────────────────────
+  let ctx;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  function playTone(freq, type, attack, decay, vol = 0.18) {
+    const a = getCtx();
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.001, a.currentTime);
+    g.gain.linearRampToValueAtTime(vol, a.currentTime + attack);
+    g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + attack + decay);
+    o.connect(g); g.connect(a.destination);
+    o.start(); o.stop(a.currentTime + attack + decay + 0.05);
+  }
+
+  function playNoise(lowFreq, highFreq, duration, vol = 0.25) {
+    const a = getCtx();
+    const buf = a.createBuffer(1, a.sampleRate * duration, a.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    const src = a.createBufferSource();
+    src.buffer = buf;
+    const f = a.createBiquadFilter();
+    f.type = 'bandpass';
+    f.frequency.setValueAtTime(lowFreq, a.currentTime);
+    f.frequency.linearRampToValueAtTime(highFreq, a.currentTime + duration * 0.5);
+    f.Q.value = 0.8;
+    const g = a.createGain();
+    g.gain.setValueAtTime(0, a.currentTime);
+    g.gain.linearRampToValueAtTime(vol, a.currentTime + 0.08);
+    g.gain.exponentialRampToValueAtTime(0.001, a.currentTime + duration);
+    src.connect(f); f.connect(g); g.connect(a.destination);
+    src.start(); src.stop(a.currentTime + duration);
+  }
+
+  const sfx = {
+    click:   () => { playTone(1100, 'sine', 0.003, 0.06, 0.1); },
+    denied:  () => { playTone(160, 'triangle', 0.01, 0.22, 0.2); playTone(130, 'triangle', 0.12, 0.22, 0.15); },
+    open:    () => {
+      playNoise(80, 600, 1.8, 0.35);
+      playTone(55, 'sine', 0.05, 1.4, 0.5);
+    },
+    chime:   () => {
+      [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.01, 0.7, 0.13), i * 100));
+    }
+  };
+
+  // ── LANDING → FORM ─────────────────────────────────
+  document.querySelectorAll('[data-enter]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.body.classList.add('form-mode', 'gate-active');
+      window.scrollTo(0, 0);
+    });
+  });
+
+  // ── GATE ───────────────────────────────────────────────
+  const gate    = document.getElementById('gate-overlay');
+  const gStatus = document.getElementById('gate-status');
+  const touchBtn = document.getElementById('touch-btn');
+  const app     = document.getElementById('app');
+  let gateOpened = false;
+
+  touchBtn.addEventListener('click', () => {
+    if (gateOpened) return;
+    gateOpened = true;
+    sfx.click();
+
+    // Step 1: Scanning
+    gStatus.textContent = 'Hədəf kilidlənir...';
+    gStatus.className = 'active';
+
+    setTimeout(() => {
+      gStatus.textContent = 'Hədəf: Elçin Əliyev — Təsdiqləndi';
+      gStatus.className = 'success';
+    }, 700);
+
+    // Step 2: Open gate + flash
+    setTimeout(() => {
+      sfx.open();
+      gate.classList.add('flash');
+      setTimeout(() => gate.classList.remove('flash'), 200);
+      gate.classList.add('opening');
+    }, 1300);
+
+    // Step 3: Show app
+    setTimeout(() => {
+      sfx.chime();
+      app.classList.add('visible');
+      document.body.classList.remove('gate-active');
+    }, 2400);
+
+    // Step 4: Remove gate
+    setTimeout(() => { gate.style.display = 'none'; }, 3400);
+  });
+
+  // ── ESCAPE BUTTON ──────────────────────────────────────
+  const escBtn = document.getElementById('btn-escape');
+  escBtn.addEventListener('mouseenter', dodge);
+  escBtn.addEventListener('touchstart', dodge, {passive: true});
+
+  function dodge() {
+    sfx.denied();
+    const x = (Math.random() - 0.5) * 200;
+    const y = (Math.random() - 0.5) * 100;
+    escBtn.style.transform = `translate(${x}px, ${y}px)`;
+    const orig = escBtn.innerHTML;
+    escBtn.innerHTML = '<span>İcazəsiz</span>';
+    setTimeout(() => { escBtn.innerHTML = orig; }, 800);
+  }
+
+  // ── REPENTANCE BAR ─────────────────────────────────────
+  const repent = document.getElementById('repent');
+  const sinBar  = document.getElementById('sin-bar');
+  const sinLbl  = document.getElementById('sin-label');
+  const charCnt = document.getElementById('char-count');
+
+  repent.addEventListener('input', () => {
+    const n = repent.value.trim().length;
+    charCnt.textContent = `${n} / 150`;
+    const pct = Math.min(100, (n / 150) * 100);
+    sinBar.style.width = pct + '%';
+
+    if (n === 0) {
+      sinBar.style.background = '#dc2626';
+      sinLbl.style.color = '#a3a3a3';
+      sinLbl.textContent = 'Ağsaqqallar sizi dinləyir.';
+    } else if (n < 50) {
+      sinBar.style.background = '#dc2626';
+      sinLbl.style.color = '#dc2626';
+      sinLbl.textContent = 'Çox qısa. Şura inanmır.';
+    } else if (n < 120) {
+      sinBar.style.background = '#f59e0b';
+      sinLbl.style.color = '#f59e0b';
+      sinLbl.textContent = 'Yaxşılaşır... Bir az da əlavə edin.';
+    } else {
+      sinBar.style.background = '#16a34a';
+      sinLbl.style.color = '#16a34a';
+      sinLbl.textContent = 'Şura üzrxahlığı nəzərə almağa hazırdır.';
+    }
+  });
+
+  // ── SUBMIT ─────────────────────────────────────────────
+  const submitBtn    = document.getElementById('submit-btn');
+  const submitNotice = document.getElementById('submit-notice');
+  let jumpCount = 0;
+
+  submitBtn.addEventListener('click', () => {
+    if (jumpCount < 3) {
+      jumpCount++;
+      sfx.denied();
+      submitBtn.classList.add('jumped');
+
+      const msgs = [
+        'Turan Həsənov hələ onaylamadı.',
+        'Ənvər Əliyev düşünür...',
+        'Cavidlər söz almaq istəyir...'
+      ];
+      const moves = [[-100, -20], [120, -15], [0, 30]];
+      const [x, y] = moves[jumpCount - 1];
+      submitBtn.style.transform = `translate(${x}px, ${y}px)`;
+      submitNotice.textContent = msgs[jumpCount - 1];
+      submitNotice.style.color = '#dc2626';
+
+      setTimeout(() => {
+        submitBtn.classList.remove('jumped');
+        if (jumpCount === 3) {
+          submitBtn.style.transform = 'translate(0,0)';
+          submitBtn.textContent = 'Təsdiqlə və Göndər →';
+          submitNotice.textContent = 'İndi basmağa icazə verildi.';
+          submitNotice.style.color = '#16a34a';
+        }
+      }, 800);
+      return;
+    }
+
+    sfx.click();
+    doSubmit();
+  });
+
+  function doSubmit() {
+    const data = {
+      fullName: 'Elçin Əliyev',
+      reason: document.querySelector('input[name=reason]:checked')?.value,
+      respect: document.querySelector('input[name=respect]:checked')?.value,
+      comp: document.querySelector('input[name=comp]:checked')?.value,
+      repentance: repent.value
+    };
+
+    fetch('/api/submit', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    }).catch(() => {});
+
+    // Open analysis modal
+    document.getElementById('modal-analysis').classList.add('open');
+    runAnalysis();
+  }
+
+  function runAnalysis() {
+    const steps = [
+      [20,  'WhatsApp arxivləri araşdırılır...'],
+      [45,  '"Keyfim elə istədi" bəhanəsinin zərəri ölçülür...'],
+      [70,  'Ağsaqqallar Şurasının rəyləri toplanır...'],
+      [90,  'Cərimə hesablanır: 6 Basdırma Dönər...'],
+      [100, 'Qərar hazırdır.']
+    ];
+    let i = 0;
+    const iv = setInterval(() => {
+      if (i >= steps.length) {
+        clearInterval(iv);
+        setTimeout(() => {
+          document.getElementById('modal-analysis').classList.remove('open');
+          showVerdict();
+        }, 600);
+        return;
+      }
+      const [pct, text] = steps[i++];
+      document.getElementById('prog-fill').style.width = pct + '%';
+      document.getElementById('prog-label').textContent = pct + '%';
+      document.getElementById('analysis-step').textContent = text;
+      sfx.click();
+    }, 1100);
+  }
+
+  function showVerdict() {
+    sfx.chime();
+    const msg = encodeURIComponent(
+      'Hörmətli Odik Ağsaqqallar Şurası (Turan, Ənvər, Ülvi, Kamil, Cavid H., Cavid Q.),\n\n' +
+      'Mən Elçin Əliyev, "Keyfim elə istədi" deyib qrupdan çıxdığım üçün hamınızdan səmimi üzr istəyirəm. ' +
+      'Rəsmi portalda formu doldurdum, 6 nəfərə basdırma dönər cəriməmi qəbul edirəm.\n\n' +
+      'Xahiş edirəm məni Odik qrupuna geri alın! 🙏😂'
+    );
+    document.getElementById('wa-btn').href = `https://api.whatsapp.com/send?text=${msg}`;
+    document.getElementById('modal-verdict').classList.add('open');
+  }
+  </script>
+</body>
+</html>

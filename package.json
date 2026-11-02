@@ -1,0 +1,17 @@
+{
+  "name": "odik-form",
+  "version": "1.0.0",
+  "description": "Odik Qrupu - Rəsmi Qəbul və İntizam Formu (Elçin Əliyev üçün Xüsusi Buraxılış)",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js"
+  },
+  "keywords": ["odik", "valorant", "form", "troll"],
+  "author": "Odik Ağsaqqallar Şurası",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
