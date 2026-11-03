@@ -25,6 +25,7 @@ function loadSubmissions() {
   }
 }
 
+
 // Helper: save submissions
 function saveSubmissions(submissions) {
   try {

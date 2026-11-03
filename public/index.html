@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Odik — Qəbul Müraciəti</title>
+  <title>ODIK GROUP — Rəsmi Qrup Portalı</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Unbounded:wght@800;900&family=Space+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
@@ -485,43 +485,215 @@
 
     .site-header {
       position: fixed; top: 0; left: 0; right: 0; z-index: 40;
-      height: 68px; padding: 0 32px;
+      height: 70px; padding: 0 36px;
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(244,243,239,0.96);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(0,0,0,0.06);
+      background: rgba(13, 14, 18, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      transition: background 0.25s;
     }
     .site-logo {
       font-family: 'Unbounded', sans-serif;
-      font-weight: 800; font-size: 14px; letter-spacing: 0.22em;
-      color: #111; text-decoration: none;
+      font-weight: 800; font-size: 15px; letter-spacing: 0.2em;
+      color: #fff; text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .site-logo::before {
+      content: '';
+      display: inline-block;
+      width: 8px; height: 8px;
+      background: #dc2626;
+      border-radius: 2px;
+      box-shadow: 0 0 10px #dc2626;
     }
     .site-nav { display: flex; align-items: center; gap: 26px; }
     .site-nav a {
-      font-size: 13px; font-weight: 500; color: #5c5c5c;
+      font-size: 13px; font-weight: 500; color: #94a3b8;
       text-decoration: none; letter-spacing: -0.01em;
+      transition: color 0.15s;
     }
-    .site-nav a:hover { color: #111; }
+    .site-nav a:hover { color: #fff; }
 
     .enter-btn {
       border: none; cursor: pointer;
-      background: #111; color: #fff;
-      font-family: inherit; font-size: 13px; font-weight: 600;
+      background: #dc2626; color: #fff;
+      font-family: inherit; font-size: 13px; font-weight: 700;
       letter-spacing: -0.01em;
-      padding: 10px 16px; border-radius: 999px;
-      transition: background 0.15s, transform 0.15s;
+      padding: 10px 18px; border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+      transition: all 0.15s ease;
     }
-    .enter-btn:hover { background: #dc2626; }
+    .enter-btn:hover { background: #b91c1c; transform: translateY(-1px); }
     .enter-btn:active { transform: scale(0.98); }
-    .enter-btn-lg { padding: 14px 22px; font-size: 14px; }
-    .enter-btn-light { background: #fff; color: #111; }
-    .enter-btn-light:hover { background: #dc2626; color: #fff; }
+    .enter-btn-lg { padding: 15px 28px; font-size: 14px; }
 
+    /* ─── HERO WITH CUSTOM VALORANT ART ────────────────── */
     .hero {
-      display: flex; flex-direction: column; align-items: center;
-      text-align: center;
-      padding: 96px 24px 12px;
+      position: relative;
+      min-height: 88vh;
+      min-height: 640px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 110px 36px 70px;
+      background-color: #0d0e12;
+      background-image: 
+        linear-gradient(90deg, rgba(13,14,18,0.96) 0%, rgba(13,14,18,0.88) 40%, rgba(13,14,18,0.45) 68%, rgba(13,14,18,0.12) 100%),
+        url('assets/images/hero-bg-4k.jpg');
+      background-position: right center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
     }
+    .hero::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 48px;
+      background: linear-gradient(180deg, transparent 0%, rgba(244,243,239,0.3) 100%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 1140px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-content {
+      max-width: 600px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    /* TACTICAL HERO BADGE */
+    .hero-badge-tactical {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 14px 5px 8px;
+      background: rgba(15, 17, 23, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-left: 3px solid #dc2626;
+      border-radius: 4px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+    .hero-badge-code {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #f87171;
+      background: rgba(220, 38, 38, 0.18);
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+    .hero-badge-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #f1f5f9;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .hero-badge-pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulseGreen 2s infinite;
+    }
+    @keyframes pulseGreen {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .hero-title {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: clamp(48px, 6.2vw, 84px);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-top: 18px;
+      text-shadow: 0 6px 30px rgba(0,0,0,0.5);
+    }
+    .hero-title .accent-text {
+      color: #dc2626;
+      display: block;
+      background: linear-gradient(135deg, #f87171 0%, #dc2626 50%, #991b1b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-lead {
+      max-width: 520px;
+      margin-top: 20px;
+      font-size: 16px;
+      line-height: 1.65;
+      color: #94a3b8;
+      text-align: left;
+    }
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+    }
+    .hero-pill-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #22c55e;
+    }
+    .hero-pill-dot.red {
+      background: #ef4444;
+      box-shadow: 0 0 6px #ef4444;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .hero-btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #f1f5f9;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 14px 24px;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+    }
+    .hero-btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
     .kicker {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
@@ -532,28 +704,6 @@
       background: #dc2626;
       box-shadow: 0 0 0 4px rgba(220,38,38,0.12);
     }
-    .hero-title {
-      font-family: 'Unbounded', sans-serif;
-      font-weight: 900;
-      font-size: clamp(64px, 11vw, 120px);
-      line-height: 0.84;
-      letter-spacing: 0.04em;
-      margin-top: 18px;
-    }
-    .hero-gun {
-      width: min(440px, 78vw); height: auto;
-      margin-top: 8px;
-      filter: drop-shadow(0 16px 28px rgba(0,0,0,0.14));
-      user-select: none; pointer-events: none;
-    }
-    .hero-lead {
-      max-width: min(420px, 100%); margin-top: 8px;
-      font-size: 16px; line-height: 1.65; color: #5c5c5c;
-    }
-    .hero-actions {
-      display: flex; align-items: center; gap: 22px;
-      margin-top: 28px;
-    }
     .text-link {
       font-size: 14px; font-weight: 600; color: #111;
       text-decoration: none; border-bottom: 1px solid #111;
@@ -562,6 +712,7 @@
     .text-link:hover { color: #dc2626; border-color: #dc2626; }
 
     .sec-inner { max-width: 1080px; margin: 0 auto; padding: 28px 32px 8px; }
+    #about .sec-inner { max-width: 1160px; }
     .sec-top h2 {
       font-family: 'Unbounded', sans-serif;
       font-weight: 800;
@@ -573,19 +724,135 @@
       max-width: 560px; margin-top: 8px;
       font-size: 15px; line-height: 1.6; color: #5c5c5c;
     }
-    #sura, #qrup { scroll-margin-top: 80px; }
+    #about, #people, #operations, #values { scroll-margin-top: 80px; }
+
+    /* ─── ABOUT SECTION WITH REAL PHOTO ─── */
+    .about-split {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 32px;
+      align-items: stretch;
+      margin-top: 24px;
+    }
+    .about-text-col {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .about-lead-box {
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-left: 4px solid #dc2626;
+      border-radius: 18px;
+      padding: 26px 28px;
+      box-shadow: 0 10px 28px -10px rgba(0,0,0,0.05);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .about-p {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: #3f3f46;
+      margin-bottom: 12px;
+    }
+    .about-p:last-child {
+      margin-bottom: 0;
+    }
+    .about-quote {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(0,0,0,0.1);
+      font-size: 13px;
+      font-weight: 600;
+      color: #dc2626;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .about-image-col {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .about-img-frame {
+      position: relative;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.12);
+      transition: transform 0.25s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .about-img-frame:hover {
+      transform: translateY(-3px);
+    }
+    .about-img-frame img {
+      width: 100%;
+      height: 100%;
+      min-height: 280px;
+      border-radius: 14px;
+      display: block;
+      object-fit: cover;
+      flex: 1;
+    }
+    .about-img-caption {
+      margin-top: 10px;
+      padding: 2px 6px 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #71717a;
+      letter-spacing: 0.04em;
+    }
+    .about-badge-float {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: #0f172a;
+      color: #f8fafc;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
     .card-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 18px;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .card-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 24px;
     }
     .info-card {
       background: #fff;
       border: 1px solid rgba(0,0,0,0.08);
       border-radius: 16px;
-      padding: 16px 16px 18px;
+      padding: 20px 20px 22px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .info-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px -10px rgba(0,0,0,0.08);
     }
     .info-card h3 {
       font-size: 16px; font-weight: 600; letter-spacing: -0.02em;
@@ -593,12 +860,17 @@
     .info-card .role {
       margin-top: 4px;
       font-size: 12px; font-weight: 600; color: #dc2626;
+      text-transform: uppercase; letter-spacing: 0.05em;
     }
     .info-card p {
       margin-top: 8px;
       font-size: 13px; line-height: 1.55; color: #5c5c5c;
     }
-    #qrup { padding-bottom: 28px; }
+    .metric-num {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 28px; font-weight: 800; color: #111;
+      letter-spacing: -0.03em;
+    }
 
     .site-footer {
       display: flex; justify-content: space-between; align-items: center;
@@ -615,13 +887,23 @@
       .site-header { padding: 0 16px; gap: 12px; }
       .site-nav { gap: 14px; }
       .site-nav a { display: none; }
-      .site-header .enter-btn { padding: 8px 12px; font-size: 12px; }
-      .hero { padding: 88px 20px 8px; }
-      .hero-title { font-size: 16vw; letter-spacing: 0.02em; }
+      .site-header .enter-btn { padding: 8px 14px; font-size: 12px; }
+      .hero {
+        padding: 100px 20px 50px;
+        min-height: auto;
+        background-position: 80% center;
+        background-image: 
+          linear-gradient(180deg, rgba(13,14,18,0.94) 0%, rgba(13,14,18,0.88) 60%, rgba(13,14,18,0.96) 100%),
+          url('assets/images/hero-bg-4k.jpg');
+      }
+      .hero-title { font-size: clamp(38px, 11vw, 56px); }
       .hero-lead { font-size: 15px; }
-      .hero-actions { flex-direction: column; gap: 14px; }
+      .hero-actions { flex-direction: column; align-items: stretch; gap: 12px; width: 100%; }
+      .hero-btn-ghost, .enter-btn-lg { justify-content: center; width: 100%; text-align: center; }
+      .about-split { grid-template-columns: 1fr; gap: 24px; }
       .sec-inner { padding: 24px 16px 4px; }
       .card-grid { grid-template-columns: 1fr; }
+      .card-grid-4 { grid-template-columns: 1fr; }
       .site-footer { padding: 20px 16px; }
     }
   </style>
@@ -630,94 +912,218 @@
 
   <div id="site">
     <header class="site-header">
-      <a class="site-logo" href="#ust">ODIK</a>
+      <a class="site-logo" href="#home">ODIK GROUP</a>
       <nav class="site-nav">
-        <a href="#sura">Şura</a>
-        <a href="#qrup">Qrup</a>
-        <button type="button" class="enter-btn" data-enter>Qəbul formu</button>
+        <a href="#about">Haqqında</a>
+        <a href="#people">Üzvlər</a>
+        <a href="#operations">Qaydalar</a>
+        <a href="#values">Dəyərlər</a>
+        <button type="button" class="enter-btn" data-enter>Qəbul Portalı</button>
       </nav>
     </header>
 
-    <section class="hero" id="ust">
-      <p class="kicker"><span class="kicker-dot"></span>Ağsaqqallar Şurası</p>
-      <h1 class="hero-title">ODIK</h1>
-      <img class="hero-gun" src="assets/images/odin.webp" alt="Odin">
-      <p class="hero-lead">Qrupun rəsmi səhifəsi. Qəbul buradan başlayır.</p>
-      <div class="hero-actions">
-        <button type="button" class="enter-btn enter-btn-lg" data-enter>Qəbul formuna keç</button>
-        <a class="text-link" href="#sura">Şuraya bax</a>
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-badge-tactical">
+            <span class="hero-badge-code">HQ // PROTOCOL</span>
+            <span class="hero-badge-label">
+              <span class="hero-badge-pulse"></span>
+              2025-ci İldən Aktiv
+            </span>
+          </div>
+
+          <h1 class="hero-title">
+            ODIK
+            <span class="accent-text">GROUP</span>
+          </h1>
+
+          <p class="hero-lead">
+            Əsgərriydə həmmeşə sukalıq olubdur peşə,<br>
+            Kamandirin gözüydüm, mən sukanın özüydüm.
+          </p>
+
+          <div class="hero-pills">
+            <div class="hero-pill">
+              <span class="hero-pill-dot"></span>
+              <span>6 Aktiv Üzv</span>
+            </div>
+            <div class="hero-pill">
+              <span class="hero-pill-dot"></span>
+              <span>Ciddi İntizam Qaydaları</span>
+            </div>
+            <div class="hero-pill">
+              <span class="hero-pill-dot red"></span>
+              <span>İnsident: bərtinnən nəsə olsa</span>
+            </div>
+          </div>
+
+          <div class="hero-actions">
+            <button type="button" class="enter-btn enter-btn-lg flex items-center gap-2" data-enter>
+              <span>Qrupa Qayıtmaq Üçün Müraciət Et</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+              </svg>
+            </button>
+            <a class="hero-btn-ghost" href="#about">
+              <span>Qrupu Kəşf Et</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+              </svg>
+            </a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="sura">
+    <!-- ABOUT SECTION -->
+    <section id="about">
       <div class="sec-inner">
         <div class="sec-top">
-          <p class="kicker"><span class="kicker-dot"></span>Şura</p>
-          <h2>Ağsaqqallar</h2>
-          <p class="sec-lead">Qrupu bu altı nəfər idarə edir. Qəbul, cərimə və intizam onların sözüdür.</p>
+          <p class="kicker"><span class="kicker-dot"></span>Haqqımızda // Rəsmi Dosye</p>
+          <h2>Biz Kimik?</h2>
+          <p class="sec-lead">2025-ci ildə Valorant cəbhələrində bünövrəsi qoyulmuş, sarsılmaz dostluq və intizam birliyi.</p>
+        </div>
+
+        <div class="about-split">
+          <!-- Left Column: Concise official narrative -->
+          <div class="about-text-col">
+            <div class="about-lead-box">
+              <p class="about-p">
+                Biz 2025-ci ilin əvvəllərində Valorant oyunu vasitəsilə bir araya gəlmiş, virtual cəbhələrdə başlayan tanışlığı qısa zamanda real həyatın sarsılmaz qardaşlığına çevirmiş vahid bir kollektivik. Bir neçə taktiki qələbə ilə başlanan bu yol tezliklə sadəcə oyun çərçivəsini aşaraq rəsmi WhatsApp qərargahımıza, gecə turnirlərinə və ənənəvi ziyafət məclislərimizə çevrildi.
+              </p>
+              <p class="about-p">
+                Qrupumuzda nizam-intizam, qarşılıqlı hörmət və kollektiv konsensus dəyişməz ali prinsipdir. Odik sadəcə bir çat deyil, bir-birinə hər zaman arxa-dayaq olan ailədir. Burada "keyfim elə istədi" deyib qrupdan çıxmaq qətiyyən qəbul edilmir — qaydanı pozanlar isə rəsmi nizamnamə cəriməsini ödəməyə məhkumdur.
+              </p>
+              <div class="about-quote">
+                <span>⚔️</span>
+                <span>"Nizamnamə Maddə 1: Qrupdan çıxmaq qadağandır, cəriməsi 6 basdırma dönərdir."</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Real Group Dinner Photo -->
+          <div class="about-image-col">
+            <div class="about-img-frame">
+              <img src="assets/images/group-dinner.jpg" alt="Odik Qrupu Rəsmi Ziyafət Məclisi">
+              <div class="about-img-caption">
+                <strong>ODİK QƏRARGAHI</strong>
+                <span>6 / 6 Heyət İştirakı İlə</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PEOPLE SECTION -->
+    <section id="people">
+      <div class="sec-inner">
+        <div class="sec-top">
+          <p class="kicker"><span class="kicker-dot"></span>Leadership &amp; Members</p>
+          <h2>People</h2>
+          <p class="sec-lead">The governing board behind all syndicate decisions, vetting procedures, and disciplinary verdicts.</p>
         </div>
         <div class="card-grid">
           <article class="info-card">
-            <h3>Turan Həsənov</h3>
-            <p class="role">Veto hüququ</p>
-            <p>Son söz ondadır. İstədiyi müraciəti dayandıra bilər.</p>
+            <h3>Turan Hasanov</h3>
+            <p class="role">Executive Veto Power</p>
+            <p>Holds absolute discretionary veto over all applications, appeals, and structural decisions. Final signature required.</p>
           </article>
           <article class="info-card">
-            <h3>Ənvər Əliyev</h3>
-            <p class="role">Təftiş komissiyası</p>
-            <p>Müraciətləri və bəhanələri yoxlayır, boş sözü keçirmir.</p>
+            <h3>Anvar Aliyev</h3>
+            <p class="role">Audit &amp; Inspection Board</p>
+            <p>Examines past chat logs, verifies factual consistency, and detects fabricated excuses with zero tolerance.</p>
           </article>
           <article class="info-card">
-            <h3>Ülvi Abdullazadə</h3>
-            <p class="role">Müdafiə naziri</p>
-            <p>Qrupun sərhədini və içəridə qalan üzvləri qoruyur.</p>
+            <h3>Ulvi Abdullazade</h3>
+            <p class="role">Defense &amp; Integrity Director</p>
+            <p>Safeguards internal communication perimeter and monitors group security protocols against unauthorized departures.</p>
           </article>
           <article class="info-card">
-            <h3>Kamil Qədiməliyev</h3>
-            <p class="role">Sədaqət nəzarətçisi</p>
-            <p>Kim qalıb, kim çıxıb — onu izləyir.</p>
+            <h3>Kamil Gadimaliyev</h3>
+            <p class="role">Loyalty &amp; Compliance Officer</p>
+            <p>Tracks active participation metrics, response latency, and overall allegiance to syndicate directives.</p>
           </article>
           <article class="info-card">
-            <h3>Cavid Həsənov</h3>
-            <p class="role">Baş intizam hakimi</p>
-            <p>Qaydanı pozanın işinə baxır və hökmü oxuyur.</p>
+            <h3>Javid Hasanov</h3>
+            <p class="role">Chief Disciplinary Magistrate</p>
+            <p>Presides over formal inquiries, reads official sanctions, and determines procedural consequences for rogue departures.</p>
           </article>
           <article class="info-card">
-            <h3>Cavid Qəhrəmanov</h3>
-            <p class="role">Arsenal və cərimə rəisi</p>
-            <p>Cəriməni hesablayır. Standart: 6 basdırma dönər.</p>
+            <h3>Javid Gahramanov</h3>
+            <p class="role">Arsenal &amp; Restitution Commissioner</p>
+            <p>Calculates compensation penalties, oversees reparations, and enforces the mandatory 6 Bastirma Doner fine.</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="qrup">
+    <!-- OPERATIONS / PROTOCOLS SECTION -->
+    <section id="operations">
       <div class="sec-inner">
         <div class="sec-top">
-          <p class="kicker"><span class="kicker-dot"></span>Qrup</p>
-          <h2>Odik necə işləyir</h2>
-          <p class="sec-lead">WhatsApp qrupu, bir qayda və geri qayıtmaq üçün tək yol.</p>
+          <p class="kicker"><span class="kicker-dot"></span>Syndicate Mechanics</p>
+          <h2>Operations</h2>
+          <p class="sec-lead">A transparent look at how Odik operates on a daily basis and how critical incidents are resolved.</p>
         </div>
         <div class="card-grid">
           <article class="info-card">
-            <h3>Qrup</h3>
-            <p>Odik WhatsApp qrupudur. İçəridə qalmaq şuranın icazəsi ilədir.</p>
+            <div class="metric-num">24/7</div>
+            <p class="role">Active Comms</p>
+            <p>Continuous encrypted banter, high-velocity meme exchange, and coordinated late-night sessions.</p>
           </article>
           <article class="info-card">
-            <h3>Qayda</h3>
-            <p>«Keyfim elə istədi» deyib çıxmaq keçərli bəhanə sayılmır.</p>
+            <div class="metric-num">100%</div>
+            <p class="role">Consensus Threshold</p>
+            <p>No expelled or detached member may be reinstated without unanimous clearance across all leadership members.</p>
           </article>
           <article class="info-card">
-            <h3>Qəbul</h3>
-            <p>Geri qayıtmaq üçün forma doldurulur. Cərimə: 6 basdırma dönər.</p>
+            <div class="metric-num">6x</div>
+            <p class="role">Standard Tariff</p>
+            <p>The standard baseline restitution consists of 6 premium Bastirma Doners with Ayrans, fully financed by the applicant.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CORE VALUES SECTION -->
+    <section id="values">
+      <div class="sec-inner">
+        <div class="sec-top">
+          <p class="kicker"><span class="kicker-dot"></span>Foundational Pillars</p>
+          <h2>Core Values</h2>
+          <p class="sec-lead">The guiding principles every member commits to upholding without hesitation.</p>
+        </div>
+        <div class="card-grid-4">
+          <article class="info-card">
+            <h3>Loyalty</h3>
+            <p class="role">Pillar I</p>
+            <p>You enter once, you stand together. Voluntary exits without cause are regarded as a high misdemeanour.</p>
+          </article>
+          <article class="info-card">
+            <h3>Accountability</h3>
+            <p class="role">Pillar II</p>
+            <p>Every action has immediate consequences. Mistakes must be confessed with complete transparency.</p>
+          </article>
+          <article class="info-card">
+            <h3>Brotherhood</h3>
+            <p class="role">Pillar III</p>
+            <p>Ruthless banter backed by unquestioned support whenever a fellow member calls upon the squad.</p>
+          </article>
+          <article class="info-card">
+            <h3>Restitution</h3>
+            <p class="role">Pillar IV</p>
+            <p>Words are cheap; nourishment is genuine. All wrongdoing is resolved around fresh Bastirma Doner.</p>
           </article>
         </div>
       </div>
     </section>
 
     <footer class="site-footer">
-      <strong>ODIK</strong>
-      <span>Ağsaqqallar Şurası</span>
+      <strong>ODIK GROUP</strong>
+      <span>All Rights Reserved &bull; Official Syndicate HQ &bull; Est. 2024</span>
     </footer>
   </div>
 
