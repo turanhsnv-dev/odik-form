@@ -485,13 +485,21 @@
 
     .site-header {
       position: fixed; top: 0; left: 0; right: 0; z-index: 40;
-      height: 70px; padding: 0 36px;
+      height: 70px; padding: 0 32px;
       display: flex; align-items: center; justify-content: space-between;
       background: rgba(13, 14, 18, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       transition: background 0.25s;
+    }
+    .header-inner {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
     .site-logo {
       font-family: 'Unbounded', sans-serif;
@@ -536,7 +544,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      padding: 110px 36px 70px;
+      padding: 110px 32px 70px;
       background-color: #0d0e12;
       background-image: 
         linear-gradient(90deg, rgba(13,14,18,0.96) 0%, rgba(13,14,18,0.88) 40%, rgba(13,14,18,0.45) 68%, rgba(13,14,18,0.12) 100%),
@@ -556,7 +564,7 @@
       pointer-events: none;
     }
     .hero-inner {
-      max-width: 1140px;
+      max-width: 1200px;
       width: 100%;
       margin: 0 auto;
       position: relative;
@@ -568,50 +576,6 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-    }
-    /* TACTICAL HERO BADGE */
-    .hero-badge-tactical {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 5px 14px 5px 8px;
-      background: rgba(15, 17, 23, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-left: 3px solid #dc2626;
-      border-radius: 4px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    }
-    .hero-badge-code {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      color: #f87171;
-      background: rgba(220, 38, 38, 0.18);
-      padding: 2px 7px;
-      border-radius: 3px;
-    }
-    .hero-badge-label {
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: #f1f5f9;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-    .hero-badge-pulse {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #22c55e;
-      box-shadow: 0 0 8px #22c55e;
-      animation: pulseGreen 2s infinite;
-    }
-    @keyframes pulseGreen {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.85); }
     }
     .hero-title {
       font-family: 'Unbounded', sans-serif;
@@ -711,8 +675,8 @@
     }
     .text-link:hover { color: #dc2626; border-color: #dc2626; }
 
-    .sec-inner { max-width: 1080px; margin: 0 auto; padding: 28px 32px 8px; }
-    #about .sec-inner { max-width: 1160px; }
+    .sec-inner { max-width: 1200px; margin: 0 auto; padding: 36px 32px 16px; }
+    #about .sec-inner { max-width: 1200px; }
     .sec-top h2 {
       font-family: 'Unbounded', sans-serif;
       font-weight: 800;
@@ -843,6 +807,252 @@
       gap: 16px;
       margin-top: 24px;
     }
+
+    /* ─── 3D AGENT FLIP CARDS ───────────────────────────── */
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-top: 28px;
+    }
+    .agent-flip-card {
+      perspective: 1200px;
+      height: 380px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .agent-flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.75s cubic-bezier(0.2, 0.85, 0.35, 1.2);
+      transform-style: preserve-3d;
+      border-radius: 20px;
+    }
+    .agent-flip-card:hover .agent-flip-inner,
+    .agent-flip-card.is-flipped .agent-flip-inner {
+      transform: rotateY(180deg);
+    }
+    .agent-flip-front,
+    .agent-flip-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    /* FRONT DESIGN */
+    .agent-flip-front {
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 26px 24px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .agent-flip-card:hover .agent-flip-front {
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12);
+      border-color: rgba(220, 38, 38, 0.3);
+    }
+    .agent-front-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .agent-op-code {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #f4f4f5;
+      color: #52525b;
+    }
+    .agent-status-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #16a34a;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .agent-status-live::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+    .agent-front-mid {
+      margin: auto 0;
+    }
+    .agent-front-class {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #a1a1aa;
+      margin-bottom: 8px;
+    }
+    .agent-front-name {
+      font-family: 'Unbounded', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: #09090b;
+    }
+    .agent-front-role {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #dc2626;
+      letter-spacing: 0.02em;
+    }
+    .agent-front-bot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(0, 0, 0, 0.08);
+    }
+    .agent-flip-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #71717a;
+      transition: color 0.2s;
+    }
+    .agent-flip-card:hover .agent-flip-hint {
+      color: #dc2626;
+    }
+
+    /* BACK DESIGN (VALORANT CHARACTER REVEAL) */
+    .agent-flip-back {
+      transform: rotateY(180deg);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+    .agent-back-img {
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 115%;
+      height: 98%;
+      object-fit: contain;
+      pointer-events: none;
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.7));
+      transition: transform 0.5s ease;
+    }
+    .agent-flip-card:hover .agent-back-img {
+      transform: translateX(-50%) scale(1.06);
+    }
+    .agent-watermark {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 900;
+      font-size: 32px;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: rgba(255, 255, 255, 0.16);
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+    .agent-back-badge {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      backdrop-filter: blur(8px);
+      text-transform: uppercase;
+    }
+    .agent-back-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 40px 20px 18px;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.94) 0%, rgba(0, 0, 0, 0.65) 60%, transparent 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .agent-back-name {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+    .agent-back-agentname {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* THEMED AGENT BACKGROUNDS */
+    .theme-neon {
+      background: radial-gradient(circle at 50% 30%, #004d66 0%, #021a24 70%, #000c14 100%);
+    }
+    .theme-neon .agent-back-agentname { color: #00f0ff; }
+    .theme-neon-accent { border-bottom: 3px solid #00f0ff; }
+
+    .theme-brimstone {
+      background: radial-gradient(circle at 50% 30%, #541d08 0%, #240a02 70%, #120300 100%);
+    }
+    .theme-brimstone .agent-back-agentname { color: #ff6f00; }
+    .theme-brimstone-accent { border-bottom: 3px solid #ff6f00; }
+
+    .theme-deadlock {
+      background: radial-gradient(circle at 50% 30%, #153a4c 0%, #091c26 70%, #030d12 100%);
+    }
+    .theme-deadlock .agent-back-agentname { color: #5ce1e6; }
+    .theme-deadlock-accent { border-bottom: 3px solid #5ce1e6; }
+
+    .theme-skye {
+      background: radial-gradient(circle at 50% 30%, #0f4021 0%, #062110 70%, #010d05 100%);
+    }
+    .theme-skye .agent-back-agentname { color: #2ecc71; }
+    .theme-skye-accent { border-bottom: 3px solid #2ecc71; }
+
+    .theme-cypher {
+      background: radial-gradient(circle at 50% 30%, #3d3215 0%, #1f1807 70%, #0d0a02 100%);
+    }
+    .theme-cypher .agent-back-agentname { color: #fbbf24; }
+    .theme-cypher-accent { border-bottom: 3px solid #fbbf24; }
+
+    .theme-raze {
+      background: radial-gradient(circle at 50% 30%, #59161a 0%, #29080b 70%, #140204 100%);
+    }
+    .theme-raze .agent-back-agentname { color: #ff4655; }
+    .theme-raze-accent { border-bottom: 3px solid #ff4655; }
     .info-card {
       background: #fff;
       border: 1px solid rgba(0,0,0,0.08);
@@ -873,14 +1083,25 @@
     }
 
     .site-footer {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 22px 32px;
       border-top: 1px solid rgba(0,0,0,0.06);
       font-size: 11px; letter-spacing: 0.14em;
       text-transform: uppercase; color: #9a9892;
+      padding: 0 32px;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .site-footer strong {
       font-family: 'Unbounded', sans-serif; font-weight: 800; color: #111;
+    }
+
+    @media (max-width: 960px) {
+      .agent-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     @media (max-width: 720px) {
@@ -902,6 +1123,7 @@
       .hero-btn-ghost, .enter-btn-lg { justify-content: center; width: 100%; text-align: center; }
       .about-split { grid-template-columns: 1fr; gap: 24px; }
       .sec-inner { padding: 24px 16px 4px; }
+      .agent-grid { grid-template-columns: 1fr; }
       .card-grid { grid-template-columns: 1fr; }
       .card-grid-4 { grid-template-columns: 1fr; }
       .site-footer { padding: 20px 16px; }
@@ -912,28 +1134,22 @@
 
   <div id="site">
     <header class="site-header">
-      <a class="site-logo" href="#home">ODIK GROUP</a>
-      <nav class="site-nav">
-        <a href="#about">Haqqında</a>
-        <a href="#people">Üzvlər</a>
-        <a href="#operations">Qaydalar</a>
-        <a href="#values">Dəyərlər</a>
-        <button type="button" class="enter-btn" data-enter>Qəbul Portalı</button>
-      </nav>
+      <div class="header-inner">
+        <a class="site-logo" href="#home">ODIK GROUP</a>
+        <nav class="site-nav">
+          <a href="#about">Haqqında</a>
+          <a href="#people">Üzvlər</a>
+          <a href="#operations">Qaydalar</a>
+          <a href="#values">Dəyərlər</a>
+          <button type="button" class="enter-btn" data-enter>Qəbul Portalı</button>
+        </nav>
+      </div>
     </header>
 
     <!-- HERO SECTION -->
     <section class="hero" id="home">
       <div class="hero-inner">
         <div class="hero-content">
-          <div class="hero-badge-tactical">
-            <span class="hero-badge-code">HQ // PROTOCOL</span>
-            <span class="hero-badge-label">
-              <span class="hero-badge-pulse"></span>
-              2025-ci İldən Aktiv
-            </span>
-          </div>
-
           <h1 class="hero-title">
             ODIK
             <span class="accent-text">GROUP</span>
@@ -1021,41 +1237,245 @@
     <section id="people">
       <div class="sec-inner">
         <div class="sec-top">
-          <p class="kicker"><span class="kicker-dot"></span>Leadership &amp; Members</p>
-          <h2>People</h2>
-          <p class="sec-lead">The governing board behind all syndicate decisions, vetting procedures, and disciplinary verdicts.</p>
+          <p class="kicker"><span class="kicker-dot"></span>Heyət // Agentlər</p>
+          <h2>Üzvlər və Xarakterlər</h2>
+          <p class="sec-lead">Odik İttifaqının rəsmi idarə heyəti. Kartların üzərinə gələrək hər üzvün Valorant xarakterini kəşf edin.</p>
         </div>
-        <div class="card-grid">
-          <article class="info-card">
-            <h3>Turan Hasanov</h3>
-            <p class="role">Executive Veto Power</p>
-            <p>Holds absolute discretionary veto over all applications, appeals, and structural decisions. Final signature required.</p>
-          </article>
-          <article class="info-card">
-            <h3>Anvar Aliyev</h3>
-            <p class="role">Audit &amp; Inspection Board</p>
-            <p>Examines past chat logs, verifies factual consistency, and detects fabricated excuses with zero tolerance.</p>
-          </article>
-          <article class="info-card">
-            <h3>Ulvi Abdullazade</h3>
-            <p class="role">Defense &amp; Integrity Director</p>
-            <p>Safeguards internal communication perimeter and monitors group security protocols against unauthorized departures.</p>
-          </article>
-          <article class="info-card">
-            <h3>Kamil Gadimaliyev</h3>
-            <p class="role">Loyalty &amp; Compliance Officer</p>
-            <p>Tracks active participation metrics, response latency, and overall allegiance to syndicate directives.</p>
-          </article>
-          <article class="info-card">
-            <h3>Javid Hasanov</h3>
-            <p class="role">Chief Disciplinary Magistrate</p>
-            <p>Presides over formal inquiries, reads official sanctions, and determines procedural consequences for rogue departures.</p>
-          </article>
-          <article class="info-card">
-            <h3>Javid Gahramanov</h3>
-            <p class="role">Arsenal &amp; Restitution Commissioner</p>
-            <p>Calculates compensation penalties, oversees reparations, and enforces the mandatory 6 Bastirma Doner fine.</p>
-          </article>
+
+        <div class="agent-grid">
+          <!-- 1. TURAN HASANOV -> NEON -->
+          <div class="agent-flip-card" data-agent="neon">
+            <div class="agent-flip-inner">
+              <!-- FRONT -->
+              <div class="agent-flip-front theme-neon-accent">
+                <div class="agent-front-top">
+                  <span class="agent-op-code">OP // 01</span>
+                  <span class="agent-status-live">Aktiv</span>
+                </div>
+                <div class="agent-front-mid">
+                  <div class="agent-front-class">DUELIST</div>
+                  <h3 class="agent-front-name">Turan Həsənov</h3>
+                  <p class="agent-front-role">Veto Hüququ</p>
+                </div>
+                <div class="agent-front-bot">
+                  <span class="agent-flip-hint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Xarakteri Göstər
+                  </span>
+                  <span style="font-family:'Space Grotesk',monospace; font-size:11px; font-weight:700; color:#00f0ff;">⚡ NEON</span>
+                </div>
+              </div>
+              <!-- BACK -->
+              <div class="agent-flip-back theme-neon">
+                <div class="agent-watermark">NEON</div>
+                <div class="agent-back-badge">DUELIST</div>
+                <img class="agent-back-img" src="assets/images/agents/neon.png" alt="Neon">
+                <div class="agent-back-info">
+                  <div>
+                    <div class="agent-back-name">Turan Həsənov</div>
+                    <div class="agent-back-agentname">⚡ NEON // DUELIST</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. ANVAR ALIYEV -> BRIMSTONE -->
+          <div class="agent-flip-card" data-agent="brimstone">
+            <div class="agent-flip-inner">
+              <!-- FRONT -->
+              <div class="agent-flip-front theme-brimstone-accent">
+                <div class="agent-front-top">
+                  <span class="agent-op-code">OP // 02</span>
+                  <span class="agent-status-live">Aktiv</span>
+                </div>
+                <div class="agent-front-mid">
+                  <div class="agent-front-class">CONTROLLER</div>
+                  <h3 class="agent-front-name">Ənvər Əliyev</h3>
+                  <p class="agent-front-role">Təftiş Komissiyası</p>
+                </div>
+                <div class="agent-front-bot">
+                  <span class="agent-flip-hint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Xarakteri Göstər
+                  </span>
+                  <span style="font-family:'Space Grotesk',monospace; font-size:11px; font-weight:700; color:#ff6f00;">🔥 BRIMSTONE</span>
+                </div>
+              </div>
+              <!-- BACK -->
+              <div class="agent-flip-back theme-brimstone">
+                <div class="agent-watermark">BRIM</div>
+                <div class="agent-back-badge">CONTROLLER</div>
+                <img class="agent-back-img" src="assets/images/agents/brimstone.png" alt="Brimstone">
+                <div class="agent-back-info">
+                  <div>
+                    <div class="agent-back-name">Ənvər Əliyev</div>
+                    <div class="agent-back-agentname">🔥 BRIMSTONE // CONTROLLER</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. KAMIL GADIMALIYEV -> DEADLOCK -->
+          <div class="agent-flip-card" data-agent="deadlock">
+            <div class="agent-flip-inner">
+              <!-- FRONT -->
+              <div class="agent-flip-front theme-deadlock-accent">
+                <div class="agent-front-top">
+                  <span class="agent-op-code">OP // 03</span>
+                  <span class="agent-status-live">Aktiv</span>
+                </div>
+                <div class="agent-front-mid">
+                  <div class="agent-front-class">SENTINEL</div>
+                  <h3 class="agent-front-name">Kamil Qədiməliyev</h3>
+                  <p class="agent-front-role">Sədaqət Nəzarətçisi</p>
+                </div>
+                <div class="agent-front-bot">
+                  <span class="agent-flip-hint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Xarakteri Göstər
+                  </span>
+                  <span style="font-family:'Space Grotesk',monospace; font-size:11px; font-weight:700; color:#5ce1e6;">❄️ DEADLOCK</span>
+                </div>
+              </div>
+              <!-- BACK -->
+              <div class="agent-flip-back theme-deadlock">
+                <div class="agent-watermark">DEADLOCK</div>
+                <div class="agent-back-badge">SENTINEL</div>
+                <img class="agent-back-img" src="assets/images/agents/deadlock.png" alt="Deadlock">
+                <div class="agent-back-info">
+                  <div>
+                    <div class="agent-back-name">Kamil Qədiməliyev</div>
+                    <div class="agent-back-agentname">❄️ DEADLOCK // SENTINEL</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. CAVID GAHRAMANOV -> SKYE -->
+          <div class="agent-flip-card" data-agent="skye">
+            <div class="agent-flip-inner">
+              <!-- FRONT -->
+              <div class="agent-flip-front theme-skye-accent">
+                <div class="agent-front-top">
+                  <span class="agent-op-code">OP // 04</span>
+                  <span class="agent-status-live">Aktiv</span>
+                </div>
+                <div class="agent-front-mid">
+                  <div class="agent-front-class">INITIATOR</div>
+                  <h3 class="agent-front-name">Cavid Qəhrəmanov</h3>
+                  <p class="agent-front-role">Arsenal &amp; Cərimə Rəisi</p>
+                </div>
+                <div class="agent-front-bot">
+                  <span class="agent-flip-hint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Xarakteri Göstər
+                  </span>
+                  <span style="font-family:'Space Grotesk',monospace; font-size:11px; font-weight:700; color:#2ecc71;">🦅 SKYE</span>
+                </div>
+              </div>
+              <!-- BACK -->
+              <div class="agent-flip-back theme-skye">
+                <div class="agent-watermark">SKYE</div>
+                <div class="agent-back-badge">INITIATOR</div>
+                <img class="agent-back-img" src="assets/images/agents/skye.png" alt="Skye">
+                <div class="agent-back-info">
+                  <div>
+                    <div class="agent-back-name">Cavid Qəhrəmanov</div>
+                    <div class="agent-back-agentname">🦅 SKYE // INITIATOR</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. CAVID HASANOV -> CYPHER -->
+          <div class="agent-flip-card" data-agent="cypher">
+            <div class="agent-flip-inner">
+              <!-- FRONT -->
+              <div class="agent-flip-front theme-cypher-accent">
+                <div class="agent-front-top">
+                  <span class="agent-op-code">OP // 05</span>
+                  <span class="agent-status-live">Aktiv</span>
+                </div>
+                <div class="agent-front-mid">
+                  <div class="agent-front-class">SENTINEL</div>
+                  <h3 class="agent-front-name">Cavid Həsənov</h3>
+                  <p class="agent-front-role">Baş İntizam Hakimi</p>
+                </div>
+                <div class="agent-front-bot">
+                  <span class="agent-flip-hint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Xarakteri Göstər
+                  </span>
+                  <span style="font-family:'Space Grotesk',monospace; font-size:11px; font-weight:700; color:#fbbf24;">👁️ CYPHER</span>
+                </div>
+              </div>
+              <!-- BACK -->
+              <div class="agent-flip-back theme-cypher">
+                <div class="agent-watermark">CYPHER</div>
+                <div class="agent-back-badge">SENTINEL</div>
+                <img class="agent-back-img" src="assets/images/agents/cypher.png" alt="Cypher">
+                <div class="agent-back-info">
+                  <div>
+                    <div class="agent-back-name">Cavid Həsənov</div>
+                    <div class="agent-back-agentname">👁️ CYPHER // SENTINEL</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. ULVI ABDULLAZADE -> RAZE -->
+          <div class="agent-flip-card" data-agent="raze">
+            <div class="agent-flip-inner">
+              <!-- FRONT -->
+              <div class="agent-flip-front theme-raze-accent">
+                <div class="agent-front-top">
+                  <span class="agent-op-code">OP // 06</span>
+                  <span class="agent-status-live">Aktiv</span>
+                </div>
+                <div class="agent-front-mid">
+                  <div class="agent-front-class">DUELIST</div>
+                  <h3 class="agent-front-name">Ülvi Abdullazadə</h3>
+                  <p class="agent-front-role">Müdafiə Naziri</p>
+                </div>
+                <div class="agent-front-bot">
+                  <span class="agent-flip-hint">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Xarakteri Göstər
+                  </span>
+                  <span style="font-family:'Space Grotesk',monospace; font-size:11px; font-weight:700; color:#ff4655;">💣 RAZE</span>
+                </div>
+              </div>
+              <!-- BACK -->
+              <div class="agent-flip-back theme-raze">
+                <div class="agent-watermark">RAZE</div>
+                <div class="agent-back-badge">DUELIST</div>
+                <img class="agent-back-img" src="assets/images/agents/raze.png" alt="Raze">
+                <div class="agent-back-info">
+                  <div>
+                    <div class="agent-back-name">Ülvi Abdullazadə</div>
+                    <div class="agent-back-agentname">💣 RAZE // DUELIST</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1122,8 +1542,10 @@
     </section>
 
     <footer class="site-footer">
-      <strong>ODIK GROUP</strong>
-      <span>All Rights Reserved &bull; Official Syndicate HQ &bull; Est. 2024</span>
+      <div class="footer-inner">
+        <strong>ODIK GROUP</strong>
+        <span>All Rights Reserved &bull; Official Syndicate HQ &bull; Est. 2024</span>
+      </div>
     </footer>
   </div>
 
@@ -1495,6 +1917,14 @@
       [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 0.01, 0.7, 0.13), i * 100));
     }
   };
+
+  // ── 3D AGENT FLIP CARDS INTERACTION ────────────────
+  document.querySelectorAll('.agent-flip-card').forEach((card) => {
+    card.addEventListener('click', () => {
+      card.classList.toggle('is-flipped');
+      if (typeof sfx !== 'undefined' && sfx.click) sfx.click();
+    });
+  });
 
   // ── LANDING → FORM ─────────────────────────────────
   document.querySelectorAll('[data-enter]').forEach((btn) => {
